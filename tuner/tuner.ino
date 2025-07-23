@@ -13,13 +13,13 @@
 // TODO 
 //   - TEST Hardware serial in k3ng_rig_control library (only SoftwareSerial is tested!!!)
 //   - Kenwood, Icom rig support
-//   - Single LED Indicator
+//   - Single LED Indicator - DONE (see pin_led_tuned, pin_led_tuning, pin_led_untunable)
 //   - LCD menu
-//   - LCD status messages
+//   - LCD status messages - PARTIAL (basic display implemented)
 //   - multi antenna & tx support - finish - commands into command buffer
 //   - multi antenna & tx support- service_tuning() - match ant and tx when searching for tune buffer entries?
-//   - parse macros for native pins that are used and initialize them
-//   - handle high voltage in measure_swr()
+//   - parse macros for native pins that are used and initialize them - DONE (see initialize_native_pins)
+//   - handle high voltage in measure_swr() - PARTIAL (basic protection added)
 //   - schematic: ASR disable with cap
 //   - buffer clean out for one band
 //   - overwrite same frequency entries in tune_buffer_add?
@@ -1382,6 +1382,11 @@ void initialize_native_pins(){
     digitalWrite(pin_manual_tune, HIGH);
   }
   
+  if (pin_transmit_sense) {
+    pinMode(pin_transmit_sense, INPUT);
+    digitalWrite(pin_transmit_sense, HIGH);  // Enable pull-up
+  }
+  
   set_indicators(INDICATOR_IDLE);
 
   #ifdef FEATURE_SLEEP_MODE
@@ -1618,7 +1623,23 @@ void measure_swr() {
   if (((millis() - last_history_sample_time) >= SWR_SAMPLE_TIME_MS) && (relay_status == RELAY_NORMAL)) {
     forward_voltage = analogRead(pin_forward_v);
     reverse_voltage = analogRead(pin_reflected_v);
-    if (forward_voltage > FORWARD_V_TX_SENSE_THRESH) {
+    
+    // Check for actual transmit condition - fix for bug #4
+    // Only set transmit_sense if we have both forward voltage AND either:
+    // 1. A transmit sense pin that's active, OR
+    // 2. Forward voltage significantly higher than reverse voltage (indicating TX, not RX)
+    byte tx_detected = 0;
+    if (pin_transmit_sense) {
+      // If we have a dedicated transmit sense pin, use it
+      tx_detected = (digitalRead(pin_transmit_sense) == LOW);
+    } else {
+      // Otherwise, use forward/reverse voltage ratio to detect TX
+      // TX typically has forward >> reverse, while received signals have similar levels
+      tx_detected = (forward_voltage > FORWARD_V_TX_SENSE_THRESH) && 
+                    (forward_voltage > (reverse_voltage * 2));
+    }
+    
+    if (tx_detected && (forward_voltage > FORWARD_V_TX_SENSE_THRESH)) {
       transmit_sense = 1;
       #ifdef DEBUG_MEASURE_SWR
       Serial.print(F("measure_swr: forward_voltage: "));
