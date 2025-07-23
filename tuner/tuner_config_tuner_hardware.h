@@ -134,4 +134,10 @@ byte tuning_mode_deactivate_macros[TUNING_MODES][2] = {
 byte i2c_expander_addr[IO_EXPANDERS] = {MCP23008_ADDRESS};
 #endif
 
+// Shift register variables (74HC595)
+#ifdef FEATURE_SHIFT_REGISTER_595
+  byte shift_register_state[SHIFT_REGISTER_COUNT] = {0}; // Current state of each shift register
+  #define TOTAL_SHIFT_REGISTER_PINS (SHIFT_REGISTER_COUNT * PINS_PER_SHIFT_REGISTER)
+#endif
+
 #endif // TUNER_CONFIG_TUNER_HARDWARE_H

@@ -49,7 +49,10 @@
   2023.10.10.0043
     Updated license
     Working on updating code for Arduino Mega (no longer supporting Uno)
-
+  
+  2025.07.23.0010
+    Added support for 74HC595 shift registers
+    Added configuration headers for common pins
 */
 
 #define CODE_VERSION "2023.10.10.0043"    

@@ -85,4 +85,9 @@
 // #define pin_inductor_9 43
 // #define pin_inductor_10 44
 
+// Shift register pins (74HC595) - used if FEATURE_SHIFT_REGISTER_595 is enabled
+#define pin_shift_register_data 41     // Serial data input (DS/SER)
+#define pin_shift_register_clock 42    // Shift register clock (SHCP/SRCLK)
+#define pin_shift_register_latch 43    // Storage register clock (STCP/RCLK)
+
 #endif // TUNER_CONFIG_PINS_H

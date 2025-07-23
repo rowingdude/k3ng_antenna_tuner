@@ -123,4 +123,11 @@
 // I/O expander settings
 #define IO_EXPANDERS 0  // Set to number of I/O expanders used
 
+// Shift register settings (74HC595)
+#ifdef FEATURE_SHIFT_REGISTER_595
+  #define SHIFT_REGISTER_COUNT 1        // Number of daisy-chained shift registers
+  #define PINS_PER_SHIFT_REGISTER 8     // Outputs per shift register (74HC595 has 8)
+  #define SHIFT_REGISTER_LATCH_DELAY 1  // Delay in microseconds after latch pulse
+#endif
+
 #endif // TUNER_CONFIG_SETTINGS_H

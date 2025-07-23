@@ -30,6 +30,9 @@
 // #define IO_EXPANDER_MCP23008           // Use MCP23008 I2C expander for relays
 // #define IO_EXPANDER_MCP23017           // Use MCP23017 I2C expander for relays
 
+// Shift register expander options
+// #define FEATURE_SHIFT_REGISTER_595     // Use 74HC595 shift registers for relay control
+
 // Advanced options
 // #define OPTION_TUNE_BUFFER_ENTRY_USE_ACCEPTABLE_SWR  // Store tune buffer entries with acceptable SWR
 // #define OPTION_WRITE_CONFIG_BEFORE_SLEEP              // Write config to EEPROM before sleep
